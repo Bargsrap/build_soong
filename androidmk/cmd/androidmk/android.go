@@ -169,6 +169,8 @@ func init() {
 			// Jacoco filters:
 			"LOCAL_JACK_COVERAGE_INCLUDE_FILTER": "jacoco.include_filter",
 			"LOCAL_JACK_COVERAGE_EXCLUDE_FILTER": "jacoco.exclude_filter",
+
+			"LOCAL_FULL_LIBS_MANIFEST_FILES": "additional_manifests",
 		})
 
 	addStandardProperties(bpparser.BoolType,
@@ -933,6 +935,7 @@ var prebuiltTypes = map[string]string{
 	"STATIC_LIBRARIES": "cc_prebuilt_library_static",
 	"EXECUTABLES":      "cc_prebuilt_binary",
 	"JAVA_LIBRARIES":   "java_import",
+	"APPS":             "android_app_import",
 	"ETC":              "prebuilt_etc",
 }
 

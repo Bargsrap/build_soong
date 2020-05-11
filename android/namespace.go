@@ -228,6 +228,11 @@ func (r *NameResolver) parseFullyQualifiedName(name string) (namespaceName strin
 }
 
 func (r *NameResolver) getNamespacesToSearchForModule(sourceNamespace *Namespace) (searchOrder []*Namespace) {
+	if sourceNamespace.visibleNamespaces == nil {
+		// When handling dependencies before namespaceMutator, assume they are non-Soong Blueprint modules and give
+		// access to all namespaces.
+		return r.sortedNamespaces.sortedItems()
+	}
 	return sourceNamespace.visibleNamespaces
 }
 
@@ -265,7 +270,12 @@ func (r *NameResolver) FindNamespaceImports(namespace *Namespace) (err error) {
 	for _, name := range namespace.importedNamespaceNames {
 		imp, ok := r.namespaceAt(name)
 		if !ok {
-			return fmt.Errorf("namespace %v does not exist", name)
+			if (name != "all") {
+				return fmt.Errorf("namespace %v does not exist", name)
+			} else {
+				namespace.visibleNamespaces = make([]*Namespace, 0, 2+len(namespace.importedNamespaceNames))
+				return nil
+			}
 		}
 		namespace.visibleNamespaces = append(namespace.visibleNamespaces, imp)
 	}
